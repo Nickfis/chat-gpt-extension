@@ -1,17 +1,19 @@
 const messageInput = document.querySelector("textarea#prompt-textarea");
 let sendButton = document.querySelector('button[data-testid="send-button"]');
+
 sendButton.addEventListener("click", () => {
   startCheck();
 });
 
 function startCheck() {
+  chrome.runtime.sendMessage({ getActiveTab: true });
   const intervalId = setInterval(() => {
     if (document.querySelector('button[data-testid="send-button"]')) {
-      console.log("Chat gpt is done generating");
       clearInterval(intervalId);
       sendButton = document.querySelector('button[data-testid="send-button"]');
       const audio = new Audio(chrome.runtime.getURL("notification.mp3"));
       audio.play();
+      chrome.runtime.sendMessage({ setActiveTab: true });
       chrome.runtime.sendMessage({ chatGPTDone: true });
     } else {
       console.log("Chat-gpt is still generating");
